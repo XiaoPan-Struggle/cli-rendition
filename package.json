@@ -1,0 +1,14 @@
+{
+  "name": "cli-rendition",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "ts-node-dev src/main.ts"
+  },
+  "repository": "git@github.com:XiaoPan-Struggle/cli-rendition.git",
+  "author": "XiaoPan <2489964425@qq.com>",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^9.4.0"
+  }
+}
