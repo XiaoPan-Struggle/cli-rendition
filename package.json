@@ -9,7 +9,9 @@
   "author": "XiaoPan <2489964425@qq.com>",
   "license": "MIT",
   "dependencies": {
-    "commander": "^9.4.0"
+    "@types/md5": "^2.3.2",
+    "commander": "^9.4.0",
+    "md5": "^2.3.0"
   },
   "devDependencies": {
     "@types/node": "^18.6.5"
