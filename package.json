@@ -1,7 +1,11 @@
 {
   "name": "cli-rendition",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "dist/main.js",
+  "bin": {
+    "xpfy": "dist/cli.ts"
+  },
+  "files": ["dist/**/*.js"],
   "scripts": {
     "dev": "ts-node-dev src/main.ts"
   },
