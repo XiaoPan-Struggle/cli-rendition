@@ -3,3 +3,4 @@
 node_modules/
 yarn.lock
 git.txt
+/src/private.ts

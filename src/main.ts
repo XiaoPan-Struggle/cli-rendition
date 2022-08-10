@@ -1,19 +1,29 @@
 import {IncomingMessage} from "http";
 import * as querystring from "querystring";
+import md5 = require("md5");
+import {appid, appSecret} from "./private";
+
+const errorMap: { [key: string]: string } = {
+  52003: "用户认证失败",
+  52004: "error2",
+  52005: "error3",
+  unknown: "服务器繁忙"
+};
 
 export const translate = (word: string) => {
   const https = require("https");
-  console.log(word);
-  //http://api.fanyi.baidu.com/api/trans/vip/translate?q=apple&from=en&to=zh&appid=2015063000000001&salt=1435660288&sign=f89f9594663708c1605f3d736d01d2d4
+  const q = word;
+  const salt = Math.random();
+  const sign = md5(appid + q + salt + appSecret);
+
   const query = querystring.stringify({
-    q: word,
+    q: q,
     from: "en",
     to: "zh",
-    appid: "2015063000000001",
-    salt: "1435660288",
-    sign: "f89f9594663708c1605f3d736d01d2d4",
+    appid: appid,
+    salt: salt,
+    sign: sign,
   });
-  console.log(query);
 
   const options = {
     hostname: "api.fanyi.baidu.com",
@@ -22,18 +32,39 @@ export const translate = (word: string) => {
     method: "GET"
   };
 
-  const req = https.request(options, (res: IncomingMessage) => {
-    console.log("statusCode:", res.statusCode);
-    console.log("headers:", res.headers);
+  type BaiduResult = {
+    form: string,
+    to: string,
+    trans_result: {
+      src: string,
+      dst: string
+    }[],
+    error_code?: string,
+    error_msg?: string
+  }
 
-    res.on("data", (d) => {
-      process.stdout.write(d);
+  const req = https.request(options, (res: IncomingMessage) => {
+    let chunks: Buffer[] = [];
+    res.on("data", (chunk) => {
+      chunks.push(chunk);
+    });
+
+    res.on("end", () => {
+      const string = Buffer.concat(chunks).toString();
+      const object: BaiduResult = JSON.parse(string);
+      if (object.error_code) {
+        console.error(errorMap[object.error_code] || object.error_msg);
+        process.exit(2);
+      } else {
+        console.log(object.trans_result[0].dst);
+        process.exit(0);
+      }
     });
   });
 
   req.on("error", (e: Error) => {
     console.error(e);
   });
-  req.end();
 
+  req.end();
 };
