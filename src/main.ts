@@ -16,10 +16,12 @@ export const translate = (word: string) => {
   const salt = Math.random();
   const sign = md5(appid + q + salt + appSecret);
 
+  let flag = /[a-zA-Z]/.test(word[0]);
+
   const query = querystring.stringify({
     q: q,
-    from: "en",
-    to: "zh",
+    from: flag ? "en" : "zh",
+    to: flag ? "zh" : "en",
     appid: appid,
     salt: salt,
     sign: sign,
@@ -56,7 +58,10 @@ export const translate = (word: string) => {
         console.error(errorMap[object.error_code] || object.error_msg);
         process.exit(2);
       } else {
-        console.log(object.trans_result[0].dst);
+        object.trans_result.map(w => {
+          console.log(`-----${w.src}-----`);
+          console.log(w.dst);
+        });
         process.exit(0);
       }
     });
