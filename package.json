@@ -10,5 +10,8 @@
   "license": "MIT",
   "dependencies": {
     "commander": "^9.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.6.5"
   }
 }
